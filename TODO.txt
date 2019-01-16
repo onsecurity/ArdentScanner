@@ -1,0 +1,4 @@
+Add arg parsing
+Add proxy/tor support
+Allow XML nmap files to be supplied instead of auto-scanning
+Add automatic ssh tunneling for enumeration.
