@@ -96,5 +96,5 @@ class Task(object):
         p = subprocess.Popen(self.cmd, shell=True, stdout=FNULL, stderr=FNULL)
         p.wait()
   
-  ---- Snipped ----
+  ---- Snipped ---`
 

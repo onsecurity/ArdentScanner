@@ -1,9 +1,7 @@
 from lib import fs
 from modules import http
-from scan import scan, TaskEngine
+from scan import TaskEngine, Scanner
 from colorama import Fore
-from threading import Thread, Event
-from Queue import Queue, Empty
 from argparse import ArgumentParser
 import settings
 import sys
@@ -11,9 +9,6 @@ from Ardent.lib.banner import get_banner
 
 import sys, os
 
-q = Queue()
-
-stopping = Event()
 
 def banner():
     print "Welcome to..." + Fore.LIGHTBLACK_EX
@@ -41,28 +36,14 @@ def parse_args():
 
 
 def init(targets):
-    fs.create_dir(settings.BASE_DIR)
-    for target in targets:
-        fs.create_dir(settings.BASE_DIR + target + "/")
+
     parse_args()
 
 
-def worker():
-    while not stopping.is_set():
-        try:
-            item = q.get(True, timeout=1)
-            scan(**item)
-        except Empty:
-            continue
-        q.task_done()
 
 
-def start_threads():
-    threads = []
-    for i in range(settings.CONCURRENT_HOSTS):
-        t = Thread(target=worker)
-        t.start()
-        threads.append(t)
+
+
 
 
 def main():
@@ -70,7 +51,7 @@ def main():
     args = parse_args()
 
     if args.list:
-        task_engine = TaskEngine(args)
+        task_engine = TaskEngine()
         task_engine.print_module_list()
         exit(0)
     targets = args.targets
@@ -84,14 +65,10 @@ def main():
         print Fore.RED + "[-] No targets specified, please specify some targets or use -iL to supply a targets file. " \
                          "See --help for more information."
         exit()
-    init(targets)
+    scanner = Scanner(targets, args)
+    scanner.scan()
 
-    for target in targets:
-        q.put({"target": target, "args": args})
 
-    start_threads()
-    q.join()
-    stopping.set()
 
 
 if __name__ == "__main__":

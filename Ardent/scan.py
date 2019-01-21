@@ -1,6 +1,7 @@
 from libnmap.process import NmapProcess
 from libnmap.parser import NmapParser
-from .lib.template import Task
+from Ardent.lib.template import Task
+from Ardent.lib import fs
 from Ardent import settings
 import pkgutil
 import sys
@@ -12,23 +13,59 @@ from threading import Thread, Event
 from tabulate import tabulate
 
 
-def scan(target, args):
-    services = []
-    nm = NmapProcess(target, options="-sV -sS")
-    nm.run()
-    parsed = NmapParser.parse(nm.stdout)
-    host = parsed.hosts[0]
-    for serv in host.services:
-        services.append(serv.get_dict())
+class Scanner(object):
 
-    engine = TaskEngine(args)
-    engine.process_scan(target, services)
-    engine.run_tasks()
+    def __init__(self, targets, args):
+        self.q = Queue()
+        self.args = args
+        self.stopping = Event()
+        self.targets = targets
+
+        fs.create_dir(settings.BASE_DIR)
+        for target in self.targets:
+            fs.create_dir(settings.BASE_DIR + target + "/")
+
+    def scan(self):
+        for target in self.targets:
+            self.q.put({"target": target, "args": self.args})
+
+        self.start_threads()
+        self.q.join()
+        self.stopping.set()
+
+    def execute_scan(self, target, args):
+        services = []
+        nm = NmapProcess(target, options="-sV -sS")
+        nm.run()
+        parsed = NmapParser.parse(nm.stdout)
+        host = parsed.hosts[0]
+        for serv in host.services:
+            services.append(serv.get_dict())
+
+        engine = TaskEngine(args)
+        engine.process_scan(target, services)
+        engine.run_tasks()
+
+    def start_threads(self):
+        threads = []
+        for i in range(settings.CONCURRENT_HOSTS):
+            t = Thread(target=self.worker)
+            t.start()
+            threads.append(t)
+
+    def worker(self):
+        while not self.stopping.is_set():
+            try:
+                item = self.q.get(True, timeout=1)
+                self.execute_scan(**item)
+            except Empty:
+                continue
+            q.task_done()
 
 
 class TaskEngine:
 
-    def __init__(self, args):
+    def __init__(self, args=None):
         self.q = Queue()
         self.stopping = Event()
         self.args = args

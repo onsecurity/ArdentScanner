@@ -10,6 +10,7 @@ from time import sleep
 import time
 from Ardent.lib.table import output_buffer, table
 from Ardent.lib.banner import get_banner
+from Ardent.lib.decorators import stdout
 import sys
 
 from tabulate import tabulate
@@ -80,11 +81,11 @@ class Task(object):
             str(time.time() - self.start_time)
         ]
 
+    @stdout
     def print_table(self):
         print_buffer = get_banner()
         print_buffer += tabulate(table, headers="firstrow", tablefmt="fancy_grid")
-        print "\033[H\033[J"
-        print print_buffer
+        return print_buffer
 
     def run(self):
         self.start_msg()
