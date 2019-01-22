@@ -1,7 +1,7 @@
 # What is this?
 
 Ardent scanner is a fully automated, extensible, dynamic command line enumeration tool.
-It is in many ways very similar to sparta, except it logs everything to flat files.
+It is in many ways very similar to sparta, except it focusses on being a framework first and foremost with simple extendability at the core of it's design. Additionally, all tool output is logged to a nice flat-file directory structure. 
 
 ## Installation
 
