@@ -9,3 +9,4 @@ def create_dir(path):
             os.mkdir(directory)
         except OSError as e:
             pass
+

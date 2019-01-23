@@ -1,5 +1,5 @@
-from libnmap.parser import NmapParser
 from libnmap.process import NmapProcess
+from libnmap.parser import NmapParser
 
 
 def scan_services(target):

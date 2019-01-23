@@ -1,8 +1,7 @@
 from colorama import Fore
 
-
 def get_banner():
-    banner = "Welcome to...\n" + Fore.LIGHTBLACK_EX
+    banner =  "Welcome to...\n" + Fore.LIGHTBLACK_EX
     banner += """                             ,,
       db                   `7MM                     mm    .M\"\"\"bgd
      ;MM:                    MM                     MM   ,MI    \"Y
@@ -14,3 +13,4 @@ def get_banner():
          Created by: @CalumBoal                                https://onsecurity.co.uk"""
     banner += Fore.RESET + "\n"
     return banner
+

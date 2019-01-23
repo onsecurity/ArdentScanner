@@ -18,7 +18,5 @@ setup(name="ArdentScan",
           "python-libnmap",
           "colorama",
           "tabulate",
-          "reprint"
-
       ],
       )

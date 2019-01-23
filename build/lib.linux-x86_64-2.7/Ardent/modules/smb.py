@@ -2,6 +2,7 @@ from Ardent.lib.template import Task
 
 
 class NbtScan(Task):
+
     services = ["netbios-ssn"]
 
     def __init__(self, target):
@@ -11,6 +12,7 @@ class NbtScan(Task):
 
 
 class SmbMap_Null(Task):
+
     services = ["netbios-ssn"]
 
     def __init__(self, target):
@@ -20,6 +22,7 @@ class SmbMap_Null(Task):
 
 
 class SmbMap_Guest(Task):
+
     services = ["netbios-ssn"]
 
     def __init__(self, target, user="test", password="test"):
@@ -29,6 +32,7 @@ class SmbMap_Guest(Task):
 
 
 class Enum4Linux(Task):
+
     services = ["netbios-ssn"]
 
     def __init__(self, target):
@@ -38,6 +42,7 @@ class Enum4Linux(Task):
 
 
 class SMBNmap(Task):
+
     services = ["netbios-ssn"]
 
     def __init__(self, target):

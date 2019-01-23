@@ -9,5 +9,4 @@ def stdout(func):
         if settings.OUTPUT_MODE == "print":
             print "\033[H\033[J"
             print buffer
-
     return wrapper

@@ -60,7 +60,7 @@ class Scanner(object):
                 self.execute_scan(**item)
             except Empty:
                 continue
-            self.q.task_done()
+            q.task_done()
 
 
 class TaskEngine:

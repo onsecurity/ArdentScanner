@@ -1,11 +1,13 @@
-import os
-import sys
-from argparse import ArgumentParser
+from lib import fs
+from modules import http
+from scan import TaskEngine, Scanner
 from colorama import Fore
-
+from argparse import ArgumentParser
+import settings
+import sys
 from Ardent.lib.banner import get_banner
 
-from scan import TaskEngine, Scanner
+import sys, os
 
 
 def banner():
@@ -18,13 +20,13 @@ def banner():
     banner_file.close()
 
 
+
 def parse_args():
-    parser = ArgumentParser(
-        description="Ardent Scanner is a lightweight, easily extendable, automated enumeration framework.")
+    parser = ArgumentParser(description="Ardent Scanner is a lightweight, easily extendable, automated enumeration framework.")
     parser.add_argument('targets', type=str,
                         help="Specify a target to scan. Specify multiple targets using a coma separated string",
-                        nargs="*", default="")
-    parser.add_argument('-iL', '--input-file', type=str,
+                       nargs="*", default="")
+    parser.add_argument('-iL', '--input-file',  type=str,
                         help="Specify a file containing a list of targets (IP's or Domain names)")
     parser.add_argument('-l', "--list", action="store_true",
                         help="Lists the class names of currently installed modules")
@@ -34,7 +36,14 @@ def parse_args():
 
 
 def init(targets):
+
     parse_args()
+
+
+
+
+
+
 
 
 def main():
@@ -60,5 +69,12 @@ def main():
     scanner.scan()
 
 
+
+
 if __name__ == "__main__":
     main()
+
+
+
+
+
