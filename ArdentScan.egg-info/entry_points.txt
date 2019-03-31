@@ -1,3 +1,0 @@
-[console_scripts]
-ardent = Ardent.__main__:main
-

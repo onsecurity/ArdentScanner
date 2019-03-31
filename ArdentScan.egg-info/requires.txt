@@ -1,4 +1,0 @@
-colorama
-python-libnmap
-reprint
-tabulate
