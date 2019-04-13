@@ -1,6 +1,6 @@
 import os
-
-BASE_DIR = "/root/.ardent/"
+import datetime
+BASE_DIR = "/home/cgboal/.ardent/" + datetime.datetime.now().isoformat() + "/"
 
 RESOURCES_DIR = os.path.join(os.path.dirname(__file__), 'resources')
 

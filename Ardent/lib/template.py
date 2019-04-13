@@ -64,7 +64,7 @@ class Task(object):
             self.port
         ]
 
-        start_list_index = table.index(filter(lambda x: x[0:3] == search, table)[0])
+        start_list_index = table.index(next(filter(lambda x: x[0:3] == search, table)))
 
         table[start_list_index] = [
             self.target,
@@ -88,6 +88,6 @@ class Task(object):
         try:
             self.action()
         except:
-            print Fore.RED + "[-] %s:%s Failed" % (self.target, self.name)
+            print(Fore.RED + "[-] %s:%s Failed" % (self.target, self.name))
         self.end_msg()
         self.print_table()

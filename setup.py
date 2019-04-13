@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name="ArdentScan",
-      version="0.1",
+      version="0.1.1-85",
       description="A fully automated, dynamic, highly extendable, command line enumeration tool",
       url="https://github.com/onsecurity/ardentscanner",
       author="Calum Boal",

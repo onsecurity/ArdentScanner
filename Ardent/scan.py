@@ -4,11 +4,12 @@ from Ardent.lib.template import Task
 from Ardent.lib import fs
 from Ardent import settings
 import pkgutil
+import re
 import sys
 import inspect
 import importlib
 from time import sleep
-from Queue import Queue, Empty
+from queue import Queue, Empty
 from threading import Thread, Event
 from tabulate import tabulate
 
@@ -21,13 +22,37 @@ class Scanner(object):
         self.stopping = Event()
         self.targets = targets
 
+        self.exclude_regexs = self.gen_exclusions()
+
         fs.create_dir(settings.BASE_DIR)
         for target in self.targets:
             fs.create_dir(settings.BASE_DIR + target + "/")
 
+    def gen_exclusions(self):
+        exclude_strings = []
+        if self.args.exclude:
+            exclude_strings.append(self.args.exclude)
+        elif self.args.exclude_file:
+            with open(self.args.exlude_file, 'r') as f:
+                exclude_strings += [line.strip() for line in f]
+        regex_strings = []
+        for exclude_string in exclude_strings:
+            regex_string = exclude_string.replace(".", "\\.")
+            regex_string = regex_string.replace("*", "[\\S]*")
+            regex_strings.append(regex_string)
+        print(regex_strings)
+        return regex_strings
+
+    def is_excluded(self, target):
+        for regex in self.exclude_regexs:
+            if re.match(regex, target):
+                return True
+        return False
+
     def scan(self):
         for target in self.targets:
-            self.q.put({"target": target, "args": self.args})
+            if not self.is_excluded(target):
+                self.q.put({"target": target, "args": self.args})
 
         self.start_threads()
         self.q.join()
@@ -35,7 +60,7 @@ class Scanner(object):
 
     def execute_scan(self, target, args):
         services = []
-        nm = NmapProcess(target, options="-sV -sS")
+        nm = NmapProcess(target, options="-sV -sS -p 443")
         nm.run()
         parsed = NmapParser.parse(nm.stdout)
         host = parsed.hosts[0]
@@ -92,7 +117,7 @@ class TaskEngine:
             self.q.task_done()
 
     def get_module_list(self):
-        import modules
+        import Ardent.modules as modules
         package = modules
         prefix = package.__name__ + "."
         class_list = []
@@ -110,7 +135,6 @@ class TaskEngine:
                         "name": mname,
                         "module": m
                     })
-
         return module_list
 
     def print_module_list(self):
@@ -122,7 +146,7 @@ class TaskEngine:
                 ", ".join(module["module"].services),
                 module["module"].aggressive
             ])
-        print tabulate(table, headers="firstrow", tablefmt="fancy_grid")
+        print(tabulate(table, headers="firstrow", tablefmt="fancy_grid"))
 
     def process_scan(self, target, nmap_services):
         module_list = self.get_module_list()

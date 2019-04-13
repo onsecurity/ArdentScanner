@@ -1,7 +1,7 @@
 from Ardent.lib.template import Task
 from Ardent.settings import RESOURCES_DIR
 
-
+"""
 class BruteSMTPUsers(Task):
     services = ["smtp"]
     aggressive = True
@@ -52,3 +52,4 @@ class BruteSMTPUsers(Task):
             self.err = "VRFY not supported"
             of.truncate()
         print self.end_msg()
+"""
