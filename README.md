@@ -30,7 +30,7 @@ Ardent Scanner utilities reflective programming techniques to dynamically execut
 To avoid overloading hosts with a high volume of network traffic Ardent Scanner utilizes thread pools to achieve concurrent enumeration whilst limiting the number of active modules. Via the settings.py file, it is possible to configure how many hosts may be scanned at one time, as well as how many modules may be executed against each host in parallel. Currently Ardent Scanner outputs all enumeration results in the form text files in a well organized directory structure. I have tried to make extending Ardent Scan as painless as possible. In the following sections we shall go through some examples of possible Ardent Modules.
 
 Below you see an example module which triggers when the initial nmap scan detects the service "netbios-ssn". As you can see, this is defined by the services property. The class then defines it's constructor, which begins the instantiation by called the parent class Task's constructor. The Modules human readable name is then defined, as well as the command which is executed by the module. All you have to do for your Module to be executed by Ardent is place it in the Modules directory and the framework will take care of the rest.
-```
+```python
 class Enum4Linux(Task):
     
     # Defines the service whose detection should trigger this module
@@ -44,7 +44,7 @@ class Enum4Linux(Task):
 Furthermore, you can specify modules which should be run once against each host regardless of which services are identified. Below you see the FullNamp Module which runs once the basic nmap scan has been completed. The FullNmap module also specifies port as a required argument. As a result, Ardent will iterate through services from the initial nmap result, extracting the port field from each one and passing it to the FullNmap module as a list. You may supply any number of args, and they will be retrieved from the initial nmap scan and passed as key word arguments to the modules constructor. For more information on the available args I reccomend you consult the python-libnmap docs.
 
 Additionally you use the self.use_subdir(dirname) method to create a new subdirectory to store the modules results, and update the Modules path attribute, which can be used to refer to the Modules output directory.
-```
+```python
 class FullNmap(Task):
     # Run once regardless of service detected
     services = ["any"]
@@ -66,7 +66,7 @@ class FullNmap(Task):
  ```
 
 In instances where you wish to specify the same Module attributes for multiple Modules, you may create a descriptor class such as theHTTPModules class seen below, and then utilize multiple inheritance to provide these attributes to a Module.
-```
+```python
 class HTTPModules(object):
     args = ["port", "service"]
     services = ["http", "ssl", "https"]
@@ -86,7 +86,7 @@ class Dirb(Task, HTTPModules):
         self.cmd = "dirb %s%s:%s -o %s/dirb_%s.txt" % (self.proto, self.target, port, self.path, port)
 ```
 Modules are executed by the framework by calling a Modules run method, which prints the start message, invokes self.action(), and then finally prints the end message. Below you can see the default action method inherited by Modules from the Task class. To write Modules which perform completely bespoke actions, simply override the action Method within your own module classes.
-```
+```python
 class Task(object):
 
   ---- Snipped ----
